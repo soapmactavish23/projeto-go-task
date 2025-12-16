@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { ModalControllerService } from '../../services/model-controller.service';
+import { ModalControllerService } from '../../services/modal-controller.service';
 
 @Component({
   selector: 'app-task-card',
