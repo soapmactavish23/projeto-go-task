@@ -9,13 +9,13 @@ import {
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
 import { ITask } from '../../interfaces/task.interface';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, JsonPipe } from '@angular/common';
 import { TaskStatus } from '../../types/task-status';
 import { TaskStatusEnum } from '../../enums/task-status.enum';
 
 @Component({
   selector: 'app-task-list-section',
-  imports: [TaskCardComponent, CdkDropList, CdkDrag, AsyncPipe],
+  imports: [TaskCardComponent, CdkDropList, CdkDrag, AsyncPipe, JsonPipe],
   templateUrl: './task-list-section.component.html',
   styleUrl: './task-list-section.component.css',
 })
@@ -46,12 +46,14 @@ export class TaskListSectionComponent {
       case 'doing-column':
         taskNextStatus = TaskStatusEnum.DOING;
         break;
-      case 'tdone-column':
+      case 'done-column':
         taskNextStatus = TaskStatusEnum.DONE;
         break;
       default:
         throw Error('Coluna não encontrada');
     }
+
+    this._taskService.updateTaskStatus(taskId, taskCurrentStatus, taskNextStatus)
   }
 
   private moveCardToColumn(event: CdkDragDrop<ITask[]>) {

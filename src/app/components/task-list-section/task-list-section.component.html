@@ -2,6 +2,10 @@
 @let doingTasks = (this._taskService.doingTasks | async) ?? [];
 @let doneTasks = (this._taskService.doneTasks | async) ?? [];
 
+<p>TODO: {{todoTasks | json}}</p>
+<p>DOING: {{doingTasks | json}}</p>
+<p>done-column: {{doneTasks | json}}</p>
+
 <div class="p-3 mb-6 flex overflow-x-auto scrollbar-hidden">
   <!-- Coluna A fazer -->
   <div
@@ -57,7 +61,7 @@
   </div>
   <!-- Coluna feito -->
   <div
-    id="tdone-column"
+    id="done-column"
     class="flex-1 py-3 px-6 min-w-60 flex flex-col gap-6"
     cdkDropList
     #doneListCdkDropList="cdkDropList"
