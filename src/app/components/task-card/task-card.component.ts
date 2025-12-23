@@ -2,7 +2,6 @@ import { Component, inject, Input } from '@angular/core';
 import { ModalControllerService } from '../../services/modal-controller.service';
 import { ITask } from '../../interfaces/task.interface';
 import { TaskService } from '../../services/task.service';
-import { ITaskFormControls } from '../../interfaces/task-form-controls.interface';
 
 @Component({
   selector: 'app-task-card',
