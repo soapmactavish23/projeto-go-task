@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, map } from 'rxjs';
+import { BehaviorSubject, map, tap } from 'rxjs';
 import { ITask } from '../interfaces/task.interface';
 import { ITaskFormControls } from '../interfaces/task-form-controls.interface';
 import { TaskStatusEnum } from '../enums/task-status.enum';
@@ -13,21 +13,24 @@ import { IComment } from '../interfaces/comment.interface';
 export class TaskService {
   //Tarefas a A fazer
   private todoTask$ = new BehaviorSubject<ITask[]>([]);
-  readonly todoTasks = this.todoTask$
-    .asObservable()
-    .pipe(map((tasks) => structuredClone(tasks)));
+  readonly todoTasks = this.todoTask$.asObservable().pipe(
+    map((tasks) => structuredClone(tasks)),
+    tap((tasks) => this.saveTasksOnLocalStorage(TaskStatusEnum.TODO, tasks)),
+  );
 
   //Tarefas a A fazer
   private doingTask$ = new BehaviorSubject<ITask[]>([]);
-  readonly doingTasks = this.doingTask$
-    .asObservable()
-    .pipe(map((tasks) => structuredClone(tasks)));
+  readonly doingTasks = this.doingTask$.asObservable().pipe(
+    map((tasks) => structuredClone(tasks)),
+    tap((tasks) => this.saveTasksOnLocalStorage(TaskStatusEnum.DOING, tasks)),
+  );
 
   //Tarefas a A fazer
   private doneTask$ = new BehaviorSubject<ITask[]>([]);
-  readonly doneTasks = this.doneTask$
-    .asObservable()
-    .pipe(map((tasks) => structuredClone(tasks)));
+  readonly doneTasks = this.doneTask$.asObservable().pipe(
+    map((tasks) => structuredClone(tasks)),
+    tap((tasks) => this.saveTasksOnLocalStorage(TaskStatusEnum.DONE, tasks)),
+  );
 
   addTask(taskInfos: ITaskFormControls) {
     const newTask: ITask = {
@@ -122,6 +125,14 @@ export class TaskService {
     );
 
     currentTaskList.next(newTaskList);
+  }
+
+  private saveTasksOnLocalStorage(key: string, task: ITask[]) {
+    try {
+      localStorage.setItem(key, JSON.stringify(task));
+    } catch (error) {
+      console.log('Erro ao salvar tarefas no localStorage', error);
+    }
   }
 
   private getTaskListByStatus(taskStatus: TaskStatus) {
