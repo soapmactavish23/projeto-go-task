@@ -12,21 +12,21 @@ import { IComment } from '../interfaces/comment.interface';
 })
 export class TaskService {
   //Tarefas a A fazer
-  private todoTask$ = new BehaviorSubject<ITask[]>([]);
+  private todoTask$ = new BehaviorSubject<ITask[]>(this.loadTasksFromLocalStorage(TaskStatusEnum.TODO));
   readonly todoTasks = this.todoTask$.asObservable().pipe(
     map((tasks) => structuredClone(tasks)),
     tap((tasks) => this.saveTasksOnLocalStorage(TaskStatusEnum.TODO, tasks)),
   );
 
   //Tarefas a A fazer
-  private doingTask$ = new BehaviorSubject<ITask[]>([]);
+  private doingTask$ = new BehaviorSubject<ITask[]>(this.loadTasksFromLocalStorage(TaskStatusEnum.DOING));
   readonly doingTasks = this.doingTask$.asObservable().pipe(
     map((tasks) => structuredClone(tasks)),
     tap((tasks) => this.saveTasksOnLocalStorage(TaskStatusEnum.DOING, tasks)),
   );
 
   //Tarefas a A fazer
-  private doneTask$ = new BehaviorSubject<ITask[]>([]);
+  private doneTask$ = new BehaviorSubject<ITask[]>(this.loadTasksFromLocalStorage(TaskStatusEnum.DONE));
   readonly doneTasks = this.doneTask$.asObservable().pipe(
     map((tasks) => structuredClone(tasks)),
     tap((tasks) => this.saveTasksOnLocalStorage(TaskStatusEnum.DONE, tasks)),
@@ -125,6 +125,16 @@ export class TaskService {
     );
 
     currentTaskList.next(newTaskList);
+  }
+
+  private loadTasksFromLocalStorage(key: string) {
+    try {
+      const storedTasks = localStorage.getItem(key);
+      return storedTasks ? JSON.parse(storedTasks) : [];
+    } catch (error) {
+      console.error('Erro ao carregar tarefas do localStorage', error);
+      return [];
+    }
   }
 
   private saveTasksOnLocalStorage(key: string, task: ITask[]) {
